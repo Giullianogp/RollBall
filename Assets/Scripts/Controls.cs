@@ -10,13 +10,18 @@ public class Controls : MonoBehaviour
 
     private Rigidbody rb;
     private int count;
-
+    private float distToGround;
+    Collider m_ObjectCollider;
 
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        m_ObjectCollider = gameObject.GetComponent<Collider>();
         count = 0;
         SetCountText();
+        //Get the distance to ground.
+        
+        distToGround = m_ObjectCollider.bounds.extents.y;
     }
 
     private void Main()
@@ -39,6 +44,12 @@ public class Controls : MonoBehaviour
             //if (Input.GetKeyDown(KeyCode.Escape))
             //    Application.Quit();
         }
+
+        if (Input.GetKeyDown("space") && IsGrounded())
+        {
+            Vector3 jump = new Vector3(0.0f, 6000.0f, 0.0f);
+            GetComponent<Rigidbody>().AddForce(jump);
+        }
     }
 
 
@@ -50,7 +61,6 @@ public class Controls : MonoBehaviour
             // Definition of force vector X and Y components
             float moveHorizontal = Input.GetAxis("Horizontal");
             float moveVertical = Input.GetAxis("Vertical");
-            //float Jump = Input.GetKeyDown("space") ? 0.0f : 1.0f;
             // Building of force vector
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
             // Adding force to rigidbody
@@ -73,6 +83,7 @@ public class Controls : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp")) other.gameObject.SetActive(false);
         count++;
         SetCountText();
+
         //Destroy(other.gameObject);
     }
 
@@ -80,4 +91,10 @@ public class Controls : MonoBehaviour
     {
         countText.text = "Count: " + count.ToString();
     }
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+    }
+
 }
