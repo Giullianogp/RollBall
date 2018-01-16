@@ -12,6 +12,8 @@ public class Controls : MonoBehaviour
     private int count;
     private float distToGround;
     Collider m_ObjectCollider;
+    float moveHorizontal;
+    float moveVertical;
 
     private void Start()
     {
@@ -59,8 +61,12 @@ public class Controls : MonoBehaviour
         {
             // Player movement in desktop devices
             // Definition of force vector X and Y components
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
+            if(IsGrounded())
+            {
+                moveHorizontal = Input.GetAxis("Horizontal");
+                moveVertical = Input.GetAxis("Vertical");
+            }
+            
             // Building of force vector
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
             // Adding force to rigidbody
